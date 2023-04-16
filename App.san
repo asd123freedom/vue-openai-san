@@ -1,0 +1,69 @@
+<template>
+  <div class="wrapper">
+    <h1>My Todo List</h1>
+    <form on-submit="addTodo">
+      <input type="text" name="todo-text" value="{{newTodoText}}" on-input="changeNewTodoText" placeholder="New todo">
+    </form>
+    <ul s-if="todos.length">
+      <TodoItem s-for="todo, index in todos trackBy todo.id" todo="{{todo}}" index="{{index}}" on-remove="removeTodo"/>
+    </ul>
+    <p class="none" s-else>Nothing left in the list. Add a new todo in the input above.</p>
+
+    <fragment s-for="todo in todos trackBy todo.id">
+      <div s-if="todo.text">{{ todo.text }}</div>
+    </fragment>
+  </div>
+</template>
+
+<script>
+import TodoItem from "./TodoItem";
+
+let nextTodoId = 1;
+
+const createTodo = (text) => ({
+  text,
+  id: nextTodoId++,
+});
+
+export default {
+  components: {
+    TodoItem,
+  },
+
+  initData() {
+    return {
+      todos: [
+        createTodo("Learn Vue"),
+        createTodo("Learn about single-file components"),
+        createTodo("Fall in love ❤️"),
+      ],
+
+      newTodoText: "",
+    };
+  },
+
+  addTodo(e) {
+    e.preventDefault();
+    const trimmedText = this.data.get("newTodoText").trim();
+
+    if (trimmedText) {
+      this.data.push("todos", createTodo(trimmedText));
+    }
+
+    this.data.set("newTodoText", "");
+  },
+
+  removeTodo(item) {
+    this.data.removeAt("todos", this.data.get("todos").indexOf(item));
+  },
+
+  changeNewTodoText(e) {
+    this.data.set("newTodoText", e.target.value);
+  },
+};
+</script>
+
+<style lang="stylus">
+*, *::before, *::after 
+  box-sizing border-box
+</style>

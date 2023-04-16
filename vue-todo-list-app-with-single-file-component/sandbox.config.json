@@ -1,0 +1,7 @@
+{
+  "template": "nuxt",
+  "hardReloadOnChange": false,
+  "container": {
+    "port": 8080
+  }
+}
